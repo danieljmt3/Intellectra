@@ -1,4 +1,4 @@
-# AngularGpt
+# INTELLECTRA
 
 Pasos para ejecutar en dev
 
