@@ -8,43 +8,44 @@ interface Option {
 }
 
 export interface TextMessageBoxEvent {
-  prompt: string;
-  selectedOption: string;
+  optionId: string;
+  optionText: string;
 }
 
-
-@Component( {
+@Component({
   selector: 'app-text-message-box-select',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './textMessageBoxSelect.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-} )
+})
 export class TextMessageBoxSelectComponent {
-
   @Input() placeholder: string = '';
   @Input({ required: true }) options!: Option[];
-
   @Output() onMessage = new EventEmitter<TextMessageBoxEvent>();
-
 
   public fb = inject(FormBuilder);
   public form = this.fb.group({
     prompt: ['', Validators.required],
-    selectedOption: ['', Validators.required ]
+    selectedOption: ['', Validators.required],
   });
 
+  trackOptionId(index: number, option: Option): string {
+    return option.id;
+  }
 
   handleSubmit() {
-    if ( this.form.invalid ) return;
+    if (this.form.invalid) return;
 
     const { prompt, selectedOption } = this.form.value;
 
-    this.onMessage.emit({prompt: prompt!, selectedOption:selectedOption! });
-    this.form.reset();
+    if (prompt && selectedOption) {
+      this.onMessage.emit({
+        optionId: selectedOption,
+        optionText: prompt,
+      });
+    }
 
+    this.form.reset();
   }
 }

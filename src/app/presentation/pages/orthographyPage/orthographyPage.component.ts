@@ -1,49 +1,53 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { ChatMessageComponent, MyMessageComponent, TextMessageBoxComponent, TextMessageBoxEvent, TextMessageBoxFileComponent, TextMessageBoxSelectComponent, TextMessageEvent, TypingLoaderComponent } from '@components/index';
+import { HttpClientModule } from '@angular/common/http';
+import { ChatMessageComponent, MyMessageComponent, TypingLoaderComponent, TextMessageBoxSelectComponent } from '@components/index';
 import { Message } from '@interfaces/message.interface';
 import { OpenAiService } from 'app/presentation/services/openai.service';
+import { TextMessageBoxEvent } from '@components/index';
 
-
-
-@Component( {
+@Component({
   selector: 'app-orthography-page',
   standalone: true,
   imports: [
     CommonModule,
+    HttpClientModule,
     ChatMessageComponent,
     MyMessageComponent,
     TypingLoaderComponent,
-
-    TextMessageBoxComponent,
-    TextMessageBoxFileComponent,
     TextMessageBoxSelectComponent,
   ],
   templateUrl: './orthographyPage.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-} )
+})
 export default class OrthographyPageComponent {
-
-  public messages = signal<Message[]>([ { text: 'Hola Mundo', isGpt: false } ]);
+  public messages = signal<Message[]>([{ text: 'Hola Mundo', isGpt: false }]);
   public isLoading = signal(false);
-  public openAiService = inject( OpenAiService );
+  public openAiService = inject(OpenAiService);
 
-
-
-  handleMessage( prompt: string ) {
-
+  handleMessage(prompt: string) {
     console.log({ prompt });
+    this.isLoading.set(true);
 
+    this.openAiService.correctaescritura(prompt).subscribe({
+      next: (response) => {
+        this.messages.update((messages) => [
+          ...messages,
+          { text: response.correctedText, isGpt: true },
+        ]);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Error al corregir:', err);
+        this.isLoading.set(false);
+      },
+    });
   }
 
-  handleMessageWithFile( { prompt, file }: TextMessageEvent ) {
-
-    console.log({ prompt, file });
-
+  handleMessageWithSelect(event: TextMessageBoxEvent) {
+    const selectedText = event.optionText;
+    if (selectedText) {
+      this.handleMessage(selectedText);
+    }
   }
-
-  handleMessageWithSelect( event: TextMessageBoxEvent ) {
-    console.log(event);
-  }
-
 }

@@ -8,6 +8,7 @@ export const corregiOrt=async(req,res)=>{
     const {prompt} = req.body;
 
     try {
+        console.log(prompt)
         const consulta=await hf.textGeneration({
             model: 'Qwen/Qwen2.5-Coder-32B-Instruct',
             inputs: `Corrige los errores ortográficos en el siguiente texto y damelo con los errores corregidos: ${prompt}`,
@@ -23,8 +24,8 @@ export const corregiOrt=async(req,res)=>{
           if (respuesta.startsWith(`Corrige los errores ortográficos en el siguiente texto y damelo con los errores corregidos: ${prompt}`)) {
             respuesta = respuesta.replace(`Corrige los errores ortográficos en el siguiente texto y damelo con los errores corregidos: ${prompt}`, '').trim();
           }
-          console.log(respuesta);          
-          return res.status(200).json({ result: respuesta });
+    
+          return res.status(200).json({ correctedText: respuesta });
 
     } catch (error) {
         return res.status(400).json({result:respuesta})

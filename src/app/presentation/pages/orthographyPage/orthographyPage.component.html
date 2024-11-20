@@ -1,52 +1,18 @@
 <div class="chat-container">
   <div class="chat-messages">
-
     <div class="grid gap-y-2">
-
-      <!-- Chat Messages -->
-      <app-chat-message
-        text="Escribe el texto que quieres que revise."
-      />
-
-      @for (message of messages(); track $index) {
-        @if( message.isGpt ) {
-          <app-chat-message [text]="message.text"/>
-        } @else {
-          <app-my-message [text]="message.text"
-          />
-        }
-      }
-
-
-
-
-
-
-      @if (isLoading()) {
-        <app-typing-loader />
-      }
-
-
-
+      <app-chat-message text="Escribe el texto que quieres que revise."></app-chat-message>
+      <ng-container *ngFor="let message of messages(); let i = index">
+        <app-chat-message *ngIf="message.isGpt" [text]="message.text"></app-chat-message>
+        <app-my-message *ngIf="!message.isGpt" [text]="message.text"></app-my-message>
+      </ng-container>
+      <app-typing-loader *ngIf="isLoading()"></app-typing-loader>
     </div>
   </div>
-
-  <!-- MessageBox -->
-  <!-- <app-text-message-box
-    placeholder="Escribe aquí lo que deseas"
-    (onMessage)="handleMessage($event)"
-  /> -->
-
-  <!-- <app-text-message-box-file
-    placeholder="Escribe aquí lo que deseas"
-    (onMessage)="handleMessageWithFile($event)"
-  /> -->
 
   <app-text-message-box-select
     placeholder="Escribe aquí lo que deseas"
     [options]="[{ id: '1', text: 'Uno' }, { id: '2', text: 'Dos' }]"
     (onMessage)="handleMessageWithSelect($event)"
-  />
-
-
+  ></app-text-message-box-select>
 </div>
