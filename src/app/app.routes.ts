@@ -41,7 +41,9 @@ export const routes: Routes = [
       {
         path: 'translate',
         loadComponent: () =>
-          import('./presentation/pages/translatePage/translatePage.component'),
+          import('./presentation/pages/translatePage/translatePage.component'
+            
+          ),
         data: {
           icon: 'fa-solid fa-language',
           title: 'Traducir',
