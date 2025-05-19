@@ -1,1 +1,40 @@
-<p>translatePage works!</p>,
+<div class="p-4 max-w-xl mx-auto">
+  <h2 class="text-xl font-bold mb-4">
+    {{ 'TRANSLATION.SELECT_SOURCE_LANGUAGE' | translate }}
+  </h2>
+
+  <select class="border p-2 rounded w-full mb-4" [(ngModel)]="sourceLang">
+    <option *ngFor="let lang of languageOptions" [ngValue]="lang.code">
+      {{ lang.name }}
+    </option>
+  </select>
+
+  <h2 class="text-xl font-bold mb-4">
+    {{ 'TRANSLATION.SELECT_TARGET_LANGUAGE' | translate }}
+  </h2>
+
+  <select class="border p-2 rounded w-full mb-4" [(ngModel)]="targetLang">
+    <option *ngFor="let lang of languageOptions" [ngValue]="lang.code">
+      {{ lang.name }}
+    </option>
+  </select>
+
+  <input
+    type="text"
+    [(ngModel)]="userText"
+    class="w-full p-2 border rounded mb-2"
+    [placeholder]="'TRANSLATION.PLACEHOLDER' | translate"
+  />
+
+  <button
+    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded"
+    (click)="handleTranslate()"
+  >
+    {{ 'TRANSLATION.TRANSLATE_BUTTON' | translate }}
+  </button>
+
+  <div *ngIf="translatedText" class="mt-4 p-4 border rounded bg-gray-100">
+    <strong>{{ 'TRANSLATION.RESULT' | translate }}:</strong>
+    <p class="mt-2">{{ translatedText }}</p>
+  </div>
+</div>

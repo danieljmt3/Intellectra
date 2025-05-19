@@ -9,7 +9,7 @@ export const corregiOrt = async (req, res) => {
   try {
     const consulta = await hf.textGeneration({
       model: "Qwen/Qwen2.5-Coder-32B-Instruct",
-      inputs: `Corrige los errores ortográficos en el siguiente texto y damelo con los errores corregidos: ${prompt}`,
+      inputs: prompt,
       parameters: {
         max_new_tokens: 2000,
         temperature: 0.7,
