@@ -1,1 +1,15 @@
-<p>textToAudioPage works!</p>,
+<div class="w-full max-w-4xl p-10 mx-auto bg-black-900 text-white rounded-2xl shadow-2xl">
+  <h2 class="text-3xl font-extrabold mb-6 text-center">Texto a Voz</h2>
+
+  <textarea [(ngModel)]="userText"
+            placeholder="Escribe algo para escucharlo en voz alta..."
+            class="w-full p-6 border border-gray-600 rounded-lg bg-gray-800 text-white mb-6 text-2xl leading-relaxed"
+            rows="6"></textarea>
+
+  <button
+    (click)="speakText()"
+    class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-lg text-2xl transition duration-300"
+  >
+     Reproducir voz
+  </button>
+</div>
