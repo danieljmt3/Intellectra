@@ -2,6 +2,10 @@ import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { OpenAiService } from 'app/presentation/services/openai.service';
+import { mbartLangCodes } from 'app/utils/lenguajes-codes';
+
+type LangKey = keyof typeof mbartLangCodes;
 
 @Component({
   selector: 'app-translate-page',
@@ -10,35 +14,33 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './translatePage.component.html',
 })
 export default class TranslatePageComponent {
-  idiomas = [
-    'english', 'spanish', 'french', 'german', 'italian', 'portuguese',
-    'russian', 'chinese_simplified', 'chinese_traditional', 'japanese',
-    'korean', 'arabic', 'hindi', 'tamil', 'bengali', 'urdu', 'vietnamese',
-    'thai', 'turkish', 'ukrainian', 'swahili', 'hausa', 'yoruba', 'amharic',
-    'fulfulde', 'khmer', 'myanmar', 'malayalam', 'telugu', 'indonesian'
-  ];
+  idiomas = Object.keys(mbartLangCodes);
 
   userText: string = '';
-  sourceLang: string = 'english';
-  targetLang: string = 'spanish';
+  sourceLang: LangKey = 'english';
+  targetLang: LangKey = 'spanish';
   translatedText: string = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private openAiService: OpenAiService) {}
 
   translate() {
-    const payload = {
-      prompt: this.userText,
-      lenbase: this.sourceLang,
-      lentradu: this.targetLang,
-    };
+    const sourceCode = mbartLangCodes[this.sourceLang];
+    const targetCode = mbartLangCodes[this.targetLang];
 
-    this.http.post<any>('http://localhost:3000/api/traducir', payload).subscribe({
-      next: (res) => {
-        this.translatedText = res.message.translation_text;
-      },
-      error: () => {
-        this.translatedText = 'Error al traducir.';
-      }
-    });
+    if (!sourceCode || !targetCode) {
+      this.translatedText = 'Idioma no soportado.';
+      return;
+    }
+
+    this.openAiService
+      .traducir(this.userText, sourceCode, targetCode)
+      .subscribe({
+        next: (res) => {
+          this.translatedText = res.translatedText;
+        },
+        error: () => {
+          this.translatedText = 'Error al traducir.';
+        },
+      });
   }
 }
