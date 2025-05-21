@@ -12,14 +12,11 @@ export class OpenAiService {
     return this.http.post<any>(`${this.apiURL}/corregir-ort`, { prompt: text });
   }
 
-  translateText(text: string, lenbase: string, lentradu: string): Observable<string> {
-    const url = `${this.apiURL}/traduccir`;
-    return this.http.post<string>(url, {
-      text,
+  traducir(prompt: string, lenbase: string, lenobjet: string): Observable<any> {
+    return this.http.post<any>(`${this.apiURL}/traduccir`, {
+      prompt,
       lenbase,
-      lentradu,
+      lenobjet,
     });
   }
-  
 }
-

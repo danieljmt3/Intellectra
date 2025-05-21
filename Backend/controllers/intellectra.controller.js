@@ -1,6 +1,6 @@
 import { HfInference } from "@huggingface/inference";
 import { hukey } from "../config/config.js";
-import { lenguajes_codigos } from "../helpers/lenguajes.js";
+import { mbartLangCodes } from "../helpers/lenguajes.js";
 import { Readable } from "stream";
 export const corregiOrt = async (req, res) => {
   const hf = new HfInference(hukey);
@@ -40,28 +40,33 @@ export const corregiOrt = async (req, res) => {
 
 export const traductor = async (req, res) => {
   const hf = new HfInference(hukey);
-  const { prompt, lenbase, lentradu } = req.body;
+  const { prompt, lenbase,lenobjet } = req.body;
+  const cuerpo=req.body;
+  console.log(cuerpo)
 
-  const lenbasecode = lenguajes_codigos[lenbase.toLowerCase()];
-  const lentraducode = lenguajes_codigos[lentradu.toLowerCase()];
+  const sourceLang = mbartLangCodes[lenbase];
+  const targetLang = mbartLangCodes[lenobjet];
 
-  console.log(lenbasecode, lentraducode);
+  //console.log(prompt,lenbase,lenobjet,sourceLang,targetLang)
+
+  if (!sourceLang || !targetLang) {
+    return res.status(400).json({ error: 'Código de idioma no soportado' });
+  }
 
   try {
-    const consultatra = await hf.translation({
-      model: "facebook/nllb-200-distilled-600M",
+    const traduccir = await hf.translation({
+      model: "facebook/mbart-large-50-many-to-many-mmt",
       inputs: prompt,
       parameters: {
-        src_lang: lenbasecode,
-        tgt_lang: lentraducode,
+        src_lang: lenbase,
+        tgt_lang: lenobjet,
       },
     });
 
-    console.log(consultatra);
-    return res.status(200).json({ message: consultatra });
+    res.json({ translatedText: traduccir.translation_text });
   } catch (error) {
-    console.log(error);
-    return res.status(400).json({ message: "Error al traducir" });
+    console.error("Error al traducir:", error);
+    res.status(500).json({ error: "Error en la traducción con Hugging Face." });
   }
 };
 
@@ -82,11 +87,11 @@ export const textoavoz = async (req, res) => {
       "Content-Disposition": "attachment; filename=output.flac",
       "Content-Length": buffer.length,
     });
-    console.log(prompt)
-    console.log(conversion)
-    return res.send(buffer)
+    console.log(prompt);
+    console.log(conversion);
+    return res.send(buffer);
   } catch (error) {
-    console.log(error)
-    return res.status(400).json({message:"Error al convertir",error})
+    console.log(error);
+    return res.status(400).json({ message: "Error al convertir", error });
   }
 };
