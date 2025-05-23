@@ -1,14 +1,21 @@
-<div class="w-full max-w-4xl p-10 mx-auto bg-black-900 text-white rounded-2xl shadow-2xl">
-  <h2 class="text-3xl font-extrabold mb-6 text-center">Texto a Voz</h2>
+<div class="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl 2xl:max-w-4xl p-4 sm:p-6 md:p-8 mx-auto bg-gray-900 text-white rounded-2xl shadow-2xl container">
+  <h2 class="text-xl sm:text-2xl font-extrabold mb-4 text-center">Texto a Voz</h2>
 
-  <textarea [(ngModel)]="userText"
-            placeholder="Escribe algo para escucharlo en voz alta..."
-            class="w-full p-6 border border-gray-600 rounded-lg bg-gray-800 text-white mb-6 text-2xl leading-relaxed"
-            rows="6"></textarea>
+  <textarea
+    [(ngModel)]="userText"
+    placeholder="Escribe algo para escucharlo en voz alta..."
+    class="w-full p-3 sm:p-4 border border-gray-600 rounded-lg bg-gray-800 text-white mb-4 text-base sm:text-lg md:text-xl leading-relaxed resize-none min-h-[80px] max-h-[140px]"
+    rows="2"
+  ></textarea>
+
+  <!-- Espacio reservado para ti pai  -->
+  <div class="mb-4">
+    <!-- Dios proevera-->
+  </div>
 
   <button
     (click)="speakText()"
-    class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-lg text-2xl transition duration-300"
+    class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 sm:py-3 rounded-lg text-base sm:text-lg md:text-xl transition duration-300"
   >
      Reproducir voz
   </button>

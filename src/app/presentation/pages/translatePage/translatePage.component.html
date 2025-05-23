@@ -1,33 +1,33 @@
-<div class="w-full p-10 mx-auto bg-gray-900 text-white rounded-2xl shadow-xl max-w-3xl">
-  <h2 class="text-2xl font-bold mb-4">Idioma de origen:</h2>
+<div class="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl p-3 sm:p-4 md:p-5 mx-auto bg-gray-900 text-white rounded-2xl shadow-xl container">
+  <h2 class="text-base sm:text-lg font-bold mb-3">Idioma de origen:</h2>
   <select [(ngModel)]="sourceLang"
-          class="bg-gray-800 text-white border border-gray-700 p-3 rounded-lg w-full mb-6 text-lg">
+          class="bg-gray-800 text-white border border-gray-700 p-2 sm:p-2.5 rounded-lg w-full mb-3 sm:mb-4 text-sm sm:text-base">
     <option *ngFor="let lang of idiomas" [value]="lang">{{ lang }}</option>
   </select>
 
-  <h2 class="text-2xl font-bold mb-4">Idioma de destino:</h2>
+  <h2 class="text-base sm:text-lg font-bold mb-3">Idioma de destino:</h2>
   <select [(ngModel)]="targetLang"
-          class="bg-gray-800 text-white border border-gray-700 p-3 rounded-lg w-full mb-6 text-lg">
+          class="bg-gray-800 text-white border border-gray-700 p-2 sm:p-2.5 rounded-lg w-full mb-3 sm:mb-4 text-sm sm:text-base">
     <option *ngFor="let lang of idiomas" [value]="lang">{{ lang }}</option>
   </select>
 
   <textarea
     [(ngModel)]="userText"
     placeholder="Escribe tu mensaje..."
-    rows="4"
-    class="w-full p-4 border border-gray-700 rounded-lg bg-gray-800 text-white mb-6 text-lg resize-none"
+    rows="2"
+    class="w-full p-2 sm:p-2.5 border border-gray-700 rounded-lg bg-gray-800 text-white mb-4 text-sm sm:text-base resize-none"
   ></textarea>
 
   <button
     [disabled]="!userText.trim() || loading"
     (click)="translate()"
-    class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg text-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+    class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 sm:py-2.5 rounded-lg text-sm sm:text-base transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
   >
     {{ loading ? 'Traduciendo...' : 'Traducir' }}
   </button>
 
-  <div *ngIf="translatedText !== undefined" class="mt-8 p-6 bg-gray-800 border border-gray-700 rounded-lg">
-    <strong class="text-xl text-purple-400">Traducción:</strong>
-    <p class="mt-4 text-gray-200 text-lg whitespace-pre-wrap">{{ translatedText }}</p>
+  <div *ngIf="translatedText !== undefined" class="mt-5 sm:mt-6 max-h-60 overflow-y-auto p-3 sm:p-4 bg-gray-800 border border-gray-700 rounded-lg">
+    <strong class="text-sm sm:text-base text-purple-400">Traducción:</strong>
+    <p class="mt-2 text-gray-200 text-sm sm:text-base whitespace-pre-wrap">{{ translatedText }}</p>
   </div>
 </div>
