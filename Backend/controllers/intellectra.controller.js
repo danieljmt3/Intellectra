@@ -1,21 +1,22 @@
 import { HfInference } from "@huggingface/inference";
 import { hukey } from "../config/config.js";
-import { mbartLangCodes } from "../helpers/lenguajes.js";
 import { Readable } from "stream";
 export const corregiOrt = async (req, res) => {
   const hf = new HfInference(hukey);
   const { prompt } = req.body;
 
   try {
+      console.log("Solicitando corrección a HuggingFace...");
     const consulta = await hf.textGeneration({
       model: "Qwen/Qwen2.5-Coder-32B-Instruct",
-      inputs: prompt,
+      inputs: `Corrige los errores ortográficos en el siguiente texto y damelo con los errores corregidos: ${prompt}`,
       parameters: {
         max_new_tokens: 2000,
         temperature: 0.7,
         repetition_penalty: 1.2,
       },
     });
+    console.log("Respuesta completa del modelo:", consulta);
 
     let respuesta = consulta.generated_text;
 
@@ -31,10 +32,13 @@ export const corregiOrt = async (req, res) => {
         )
         .trim();
     }
-
+    console.log(consulta.generated_text)
     return res.status(200).json({ correctedText: respuesta });
   } catch (error) {
-    return res.status(400).json({ result: respuesta });
+    return res.status(400).json({
+      error: 'Error al generar la corrección',
+      details: error.message,
+    });
   }
 };
 
@@ -44,12 +48,9 @@ export const traductor = async (req, res) => {
   const cuerpo=req.body;
   console.log(cuerpo)
 
-  const sourceLang = mbartLangCodes[lenbase];
-  const targetLang = mbartLangCodes[lenobjet];
-
   //console.log(prompt,lenbase,lenobjet,sourceLang,targetLang)
 
-  if (!sourceLang || !targetLang) {
+  if (!lenbase || !lenobjet) {
     return res.status(400).json({ error: 'Código de idioma no soportado' });
   }
 
@@ -63,7 +64,7 @@ export const traductor = async (req, res) => {
       },
     });
 
-    res.json({ translatedText: traduccir.translation_text });
+    res.status(200).json({ translatedText: traduccir.translation_text });
   } catch (error) {
     console.error("Error al traducir:", error);
     res.status(500).json({ error: "Error en la traducción con Hugging Face." });

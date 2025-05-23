@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -20,26 +20,38 @@ export default class TranslatePageComponent {
   sourceLang: LangKey = 'english';
   targetLang: LangKey = 'spanish';
   translatedText: string = '';
+  loading: boolean = false; // nuevo estado
 
-  constructor(private openAiService: OpenAiService) {}
+  constructor(private openAiService: OpenAiService, private ngZone: NgZone, private cdr: ChangeDetectorRef) {}
 
   translate() {
     const sourceCode = mbartLangCodes[this.sourceLang];
     const targetCode = mbartLangCodes[this.targetLang];
 
-    if (!sourceCode || !targetCode) {
-      this.translatedText = 'Idioma no soportado.';
+    if (!sourceCode || !targetCode || !this.userText.trim()) {
+      this.translatedText = 'Idioma no soportado o texto vacío.';
       return;
     }
+
+    this.loading = true;
 
     this.openAiService
       .traducir(this.userText, sourceCode, targetCode)
       .subscribe({
         next: (res) => {
-          this.translatedText = res.translatedText;
+          this.ngZone.run(() => {
+            console.log('Respuesta completa:', res);
+            this.translatedText =
+              res?.translatedText ?? 'Sin traducción disponible.';
+            this.loading = false;
+            this.cdr.detectChanges();
+          });
         },
         error: () => {
-          this.translatedText = 'Error al traducir.';
+          this.ngZone.run(() => {
+            this.translatedText = 'Error al traducir.';
+            this.loading = false;
+          });
         },
       });
   }

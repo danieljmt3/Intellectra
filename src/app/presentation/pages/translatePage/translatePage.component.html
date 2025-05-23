@@ -19,13 +19,14 @@
   ></textarea>
 
   <button
+    [disabled]="!userText.trim() || loading"
     (click)="translate()"
-    class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg text-lg transition-colors duration-200"
+    class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg text-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
   >
-    Traducir
+    {{ loading ? 'Traduciendo...' : 'Traducir' }}
   </button>
 
-  <div *ngIf="translatedText" class="mt-8 p-6 bg-gray-800 border border-gray-700 rounded-lg">
+  <div *ngIf="translatedText !== undefined" class="mt-8 p-6 bg-gray-800 border border-gray-700 rounded-lg">
     <strong class="text-xl text-purple-400">Traducción:</strong>
     <p class="mt-4 text-gray-200 text-lg whitespace-pre-wrap">{{ translatedText }}</p>
   </div>
