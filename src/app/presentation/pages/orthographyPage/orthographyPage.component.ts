@@ -1,7 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { ChatMessageComponent, MyMessageComponent, TypingLoaderComponent, TextMessageBoxSelectComponent } from '@components/index';
+import {
+  ChatMessageComponent,
+  MyMessageComponent,
+  TypingLoaderComponent,
+  TextMessageBoxSelectComponent,
+} from '@components/index';
 import { Message } from '@interfaces/message.interface';
 import { OpenAiService } from 'app/presentation/services/openai.service';
 import { TextMessageBoxEvent } from '@components/index';
@@ -21,13 +31,18 @@ import { TextMessageBoxEvent } from '@components/index';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class OrthographyPageComponent {
-  public messages = signal<Message[]>([{ text: 'Hola Mundo', isGpt: false }]);
+  public messages = signal<Message[]>([]);
   public isLoading = signal(false);
   public openAiService = inject(OpenAiService);
 
   handleMessage(prompt: string) {
     console.log({ prompt });
     this.isLoading.set(true);
+
+    this.messages.update((messages) => [
+      ...messages,
+      { text: prompt, isGpt: false },
+    ]);
 
     this.openAiService.correctaescritura(prompt).subscribe({
       next: (response) => {
