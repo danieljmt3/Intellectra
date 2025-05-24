@@ -1,5 +1,5 @@
 <div class="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl 2xl:max-w-4xl p-4 sm:p-6 md:p-8 mx-auto bg-gray-900 text-white rounded-2xl shadow-2xl container">
-  <h2 class="text-xl sm:text-2xl font-extrabold mb-4 text-center">Texto a Voz</h2>
+  <h2 class="text-xl sm:text-2xl font-extrabold mb-4 text-center">Texto a Voz con IA</h2>
 
   <textarea
     [(ngModel)]="userText"
@@ -8,15 +8,29 @@
     rows="2"
   ></textarea>
 
-  <!-- Espacio reservado para ti pai  -->
-  <div class="mb-4">
-    <!-- Dios proevera-->
+  <div class="mb-4 flex flex-col sm:flex-row items-center gap-4">
+    <label for="genderSelect" class="text-lg font-medium text-gray-300">Seleccionar Voz:</label>
+    <select
+      id="genderSelect"
+      [(ngModel)]="selectedGender"
+      class="flex-grow p-2 sm:p-3 border border-gray-600 rounded-lg bg-gray-800 text-white text-base sm:text-lg cursor-pointer"
+    >
+      <option value="mujer">Femenina</option>
+      <option value="hombre">Masculina</option>
+    </select>
   </div>
 
   <button
     (click)="speakText()"
-    class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 sm:py-3 rounded-lg text-base sm:text-lg md:text-xl transition duration-300"
+    [disabled]="isLoading" 
+    class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 sm:py-3 rounded-lg text-base sm:text-lg md:text-xl transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
   >
-     Reproducir voz
+    <span *ngIf="!isLoading">Reproducir Voz</span>
+    <span *ngIf="isLoading">Generando audio...</span>
   </button>
+
+  <div *ngIf="audioUrl" class="mt-6">
+    <h3 class="text-lg font-medium mb-2">Escucha tu audio:</h3>
+    <audio [src]="audioUrl" controls class="w-full rounded-lg"></audio>
+    </div>
 </div>

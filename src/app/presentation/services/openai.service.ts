@@ -19,4 +19,13 @@ export class OpenAiService {
       lenobjet,
     });
   }
+
+  texttospeech(prompt: string, genero:string): Observable<Blob> {
+    return this.http.post(`${this.apiURL}/textospeech`,{
+      prompt,
+      genero
+    },{
+      responseType:'blob'
+    });
+  }
 }
