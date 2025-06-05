@@ -13,7 +13,7 @@ export class OpenAiService {
   }
 
   traducir(prompt: string, lenbase: string, lenobjet: string): Observable<any> {
-    return this.http.post<any>(`${this.apiURL}/traduccir`, {
+    return this.http.post<any>(`${this.apiURL}/traducir`, {
       prompt,
       lenbase,
       lenobjet,

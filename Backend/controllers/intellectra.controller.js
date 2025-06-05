@@ -1,5 +1,5 @@
 import { HfInference } from "@huggingface/inference";
-import { elevenApi, hukey } from "../config/config.js";
+import { elevenApi, hukey,replicateApit } from "../config/config.js";
 import { ElevenLabsClient } from "elevenlabs";
 import { Buffer } from "buffer";
 
@@ -107,11 +107,30 @@ export const textoavoz = async (req, res) => {
     );
     console.log("[ElevenLabs TTS] Conversión exitosa.");
     return res.send(buffer);
-    /*const voices = await elevenLab.voices.getAll();
-    console.log(voices)
-    return res.json(voices);*/
   } catch (error) {
     console.log(error);
     return res.status(400).json({ message: "Error al convertir", error });
   }
+};
+
+export const generacionImagen = async (req, res) => {
+  const hf=new HfInference(hukey)
+  const { prompt } = req.body;
+  console.log(prompt);
+
+  try {
+    const generalIMG = await hf.textToImage({
+      model: "stabilityai/stable-diffusion-xl-base-1.0",
+      inputs: prompt,
+    });
+    const buffer = await generalIMG.arrayBuffer();
+    const imageBuffer = Buffer.from(buffer);
+
+    // Puedes devolver la imagen directamente:
+    res.setHeader('Content-Type', 'image/png');
+    return res.send(imageBuffer);
+    return res.send(`Hola, recibi esto:${prompt}, pilla la consola`);
+  } catch (error) {}
+
+  
 };
