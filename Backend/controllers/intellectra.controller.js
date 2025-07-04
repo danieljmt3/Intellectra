@@ -1,5 +1,5 @@
 import { HfInference } from "@huggingface/inference";
-import { elevenApi, hukey,replicateApit } from "../config/config.js";
+import { elevenApi, hukey } from "../config/config.js";
 import { ElevenLabsClient } from "elevenlabs";
 import { Buffer } from "buffer";
 
@@ -47,8 +47,6 @@ export const corregiOrt = async (req, res) => {
 export const traductor = async (req, res) => {
   const hf = new HfInference(hukey);
   const { prompt, lenbase, lenobjet } = req.body;
-  const cuerpo = req.body;
-  console.log(cuerpo);
 
   //console.log(prompt,lenbase,lenobjet,sourceLang,targetLang)
 
@@ -96,9 +94,9 @@ export const textoavoz = async (req, res) => {
     }
     const buffer = Buffer.concat(chunks);
 
-    // Ajusta las cabeceras de la respuesta
+
     res.set({
-      "Content-Type": "audio/mpeg", // ElevenLabs suele generar MP3
+      "Content-Type": "audio/mpeg", 
       "Content-Disposition": `attachment; filename=output_${generoSelect}.mp3`,
       "Content-Length": buffer.length,
     });
@@ -114,7 +112,7 @@ export const textoavoz = async (req, res) => {
 };
 
 export const generacionImagen = async (req, res) => {
-  const hf=new HfInference(hukey)
+  const hf = new HfInference(hukey);
   const { prompt } = req.body;
   console.log(prompt);
 
@@ -126,11 +124,7 @@ export const generacionImagen = async (req, res) => {
     const buffer = await generalIMG.arrayBuffer();
     const imageBuffer = Buffer.from(buffer);
 
-    // Puedes devolver la imagen directamente:
-    res.setHeader('Content-Type', 'image/png');
+    res.setHeader("Content-Type", "image/png");
     return res.send(imageBuffer);
-    return res.send(`Hola, recibi esto:${prompt}, pilla la consola`);
   } catch (error) {}
-
-  
 };
