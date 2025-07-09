@@ -44,8 +44,11 @@ export default class OrthographyPageComponent {
       { text: prompt, isGpt: false },
     ]);
 
+    
+
     this.openAiService.correctaescritura(prompt).subscribe({
       next: (response) => {
+        console.log("respuesta del backend",response)
         this.messages.update((messages) => [
           ...messages,
           { text: response.correctedText, isGpt: true },

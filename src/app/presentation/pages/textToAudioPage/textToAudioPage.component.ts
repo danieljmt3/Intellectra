@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { OpenAiService } from 'app/presentation/services/openai.service';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser'; // Importar DomSanitizer
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-text-to-audio-page',
@@ -42,10 +42,10 @@ export default class TextToAudioPageComponent {
           const url = URL.createObjectURL(audioBlob);
           this.audioUrl = this.sanitizer.bypassSecurityTrustUrl(url);
 
-          console.log('URL de audio creada y sanitizada:', this.audioUrl); // <-- NUEVO LOG
+          console.log('URL de audio creada y sanitizada:', this.audioUrl);
 
-          this.isLoading = false; // <-- ASEGÚRATE DE QUE ESTO SE EJECUTA
-          console.log('isLoading ahora es:', this.isLoading); // <-- NUEVO LOG
+          this.isLoading = false;
+          console.log('isLoading ahora es:', this.isLoading);
           this.cdr.detectChanges();
         },
         error: (error) => {

@@ -1,42 +1,31 @@
-import { HfInference } from "@huggingface/inference";
+import { InferenceClient} from "@huggingface/inference";
 import { elevenApi, hukey } from "../config/config.js";
 import { ElevenLabsClient } from "elevenlabs";
 import { Buffer } from "buffer";
 
 export const corregiOrt = async (req, res) => {
-  const hf = new HfInference(hukey);
+  const hf = new InferenceClient(hukey);
   const { prompt } = req.body;
 
   try {
     console.log("Solicitando corrección a HuggingFace...");
-    const consulta = await hf.textGeneration({
-      model: "Qwen/Qwen2.5-Coder-32B-Instruct",
-      inputs: `Corrige los errores ortográficos en el siguiente texto y damelo con los errores corregidos: ${prompt}`,
-      parameters: {
-        max_new_tokens: 2000,
-        temperature: 0.7,
-        repetition_penalty: 1.2,
-      },
+    const consulta = await hf.chatCompletion({
+      model: "deepseek-ai/DeepSeek-R1-0528",
+      provider:"fireworks-ai",
+      messages:[
+        {
+          role:"user",
+          content:`Corrige los errores ortográficos en el siguiente texto y damelo con los errores corregidos: ${prompt}`
+        }
+      ],
     });
     console.log("Respuesta completa del modelo:", consulta);
 
-    let respuesta = consulta.generated_text;
+    
 
-    if (
-      respuesta.startsWith(
-        `Corrige los errores ortográficos en el siguiente texto y damelo con los errores corregidos: ${prompt}`
-      )
-    ) {
-      respuesta = respuesta
-        .replace(
-          `Corrige los errores ortográficos en el siguiente texto y damelo con los errores corregidos: ${prompt}`,
-          ""
-        )
-        .trim();
-    }
-    console.log(consulta.generated_text);
-    return res.status(200).json({ correctedText: respuesta });
+    return res.status(200).json({ correctedText: consulta.choices[0].message.content });
   } catch (error) {
+    console.log("Existe un error:",error)
     return res.status(400).json({
       error: "Error al generar la corrección",
       details: error.message,
@@ -45,7 +34,7 @@ export const corregiOrt = async (req, res) => {
 };
 
 export const traductor = async (req, res) => {
-  const hf = new HfInference(hukey);
+  const hf = new InferenceClient(hukey);
   const { prompt, lenbase, lenobjet } = req.body;
 
   //console.log(prompt,lenbase,lenobjet,sourceLang,targetLang)
@@ -112,19 +101,20 @@ export const textoavoz = async (req, res) => {
 };
 
 export const generacionImagen = async (req, res) => {
-  const hf = new HfInference(hukey);
+  const hf = new InferenceClient(hukey);
   const { prompt } = req.body;
-  console.log(prompt);
 
   try {
     const generalIMG = await hf.textToImage({
-      model: "stabilityai/stable-diffusion-xl-base-1.0",
+      provider:"hf-inference",
+      model: "black-forest-labs/FLUX.1-dev",
       inputs: prompt,
     });
     const buffer = await generalIMG.arrayBuffer();
     const imageBuffer = Buffer.from(buffer);
 
     res.setHeader("Content-Type", "image/png");
-    return res.send(imageBuffer);
+    console.log("Imagen enviada")
+    return res.status(200).send(imageBuffer);
   } catch (error) {}
 };

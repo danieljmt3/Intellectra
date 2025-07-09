@@ -28,4 +28,12 @@ export class OpenAiService {
       responseType:'blob'
     });
   }
+
+  imagengeneration(prompt:string): Observable<Blob> {
+    return this.http.post(`${this.apiURL}/imagengen`,{
+      prompt
+    },{
+      responseType:'blob'
+    })
+  }
 }
