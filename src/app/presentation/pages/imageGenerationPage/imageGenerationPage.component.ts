@@ -1,11 +1,37 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-image-generation-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './imageGenerationPage.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class ImageGenerationPageComponent {}
+export default class ImageGenerationPageComponent {
+  prompt: string = '';
+  imageUrl: string = '';
+  loading: boolean = false;
+
+  constructor(private http: HttpClient) {}
+
+  generarImagen() {
+    if (!this.prompt.trim()) return;
+
+    this.loading = true;
+    this.http
+      .post('http://localhost:3000/api/imagen', { prompt: this.prompt }, { responseType: 'blob' })
+      .subscribe({
+        next: (blob) => {
+          this.imageUrl = URL.createObjectURL(blob);
+          this.loading = false;
+        },
+        error: () => {
+          this.imageUrl = '';
+          this.loading = false;
+          alert('Error al generar la imagen');
+        },
+      });
+  }
+}

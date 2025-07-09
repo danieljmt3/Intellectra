@@ -1,19 +1,19 @@
-<div class="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl 2xl:max-w-4xl p-4 sm:p-6 md:p-8 mx-auto bg-gray-900 text-white rounded-2xl shadow-2xl container">
-  <h2 class="text-xl sm:text-2xl font-extrabold mb-4 text-center">Texto a Voz con IA</h2>
+<div class="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl 2xl:max-w-4xl p-4 sm:p-6 md:p-8 mx-auto bg-[#1E1E1E] text-white rounded-2xl shadow-2xl container">
+  <h2 class="text-xl sm:text-2xl font-extrabold mb-4 text-center text-white">Texto a Voz con IA</h2>
 
   <textarea
     [(ngModel)]="userText"
     placeholder="Escribe algo para escucharlo en voz alta..."
-    class="w-full p-3 sm:p-4 border border-gray-600 rounded-lg bg-gray-800 text-white mb-4 text-base sm:text-lg md:text-xl leading-relaxed resize-none min-h-[80px] max-h-[140px]"
+    class="w-full p-3 sm:p-4 border border-[#3A3A3A] rounded-lg bg-[#2A2A2A] text-white mb-4 text-base sm:text-lg md:text-xl leading-relaxed resize-none min-h-[80px] max-h-[140px]"
     rows="2"
   ></textarea>
 
   <div class="mb-4 flex flex-col sm:flex-row items-center gap-4">
-    <label for="genderSelect" class="text-lg font-medium text-gray-300">Seleccionar Voz:</label>
+    <label for="genderSelect" class="text-lg font-medium text-white">Seleccionar Voz:</label>
     <select
       id="genderSelect"
       [(ngModel)]="selectedGender"
-      class="flex-grow p-2 sm:p-3 border border-gray-600 rounded-lg bg-gray-800 text-white text-base sm:text-lg cursor-pointer"
+      class="flex-grow p-2 sm:p-3 border border-[#3A3A3A] rounded-lg bg-[#2A2A2A] text-white text-base sm:text-lg cursor-pointer"
     >
       <option value="mujer">Femenina</option>
       <option value="hombre">Masculina</option>
@@ -23,14 +23,14 @@
   <button
     (click)="speakText()"
     [disabled]="isLoading" 
-    class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 sm:py-3 rounded-lg text-base sm:text-lg md:text-xl transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+    class="w-full bg-[#A191FB] hover:bg-[#8B7FF0] text-white font-bold py-2 sm:py-3 rounded-lg text-base sm:text-lg md:text-xl transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
   >
     <span *ngIf="!isLoading">Reproducir Voz</span>
     <span *ngIf="isLoading">Generando audio...</span>
   </button>
 
   <div *ngIf="audioUrl" class="mt-6">
-    <h3 class="text-lg font-medium mb-2">Escucha tu audio:</h3>
-    <audio [src]="audioUrl" controls class="w-full rounded-lg"></audio>
-    </div>
+    <h3 class="text-lg font-medium mb-2 text-[#A191FB]">Escucha tu audio:</h3>
+    <audio [src]="audioUrl" controls class="w-full rounded-lg bg-[#2A2A2A]"></audio>
+  </div>
 </div>
