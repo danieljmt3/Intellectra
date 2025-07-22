@@ -1,8 +1,7 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { OpenAiService } from 'app/presentation/services/openai.service';
-import { ChangeDetectorRef } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-image-generation-page',
@@ -12,34 +11,24 @@ import { ChangeDetectorRef } from '@angular/core';
 })
 export default class ImageGenerationPageComponent {
   prompt: string = '';
-  imageUrl: string = '';
-  loading: boolean = false;
+  imageUrl: string | null = null;
 
-  constructor(private openiaservice: OpenAiService, private cdRefor:ChangeDetectorRef) {}
+  constructor(private http: HttpClient) {}
 
   generarImagen() {
     if (!this.prompt.trim()) return;
 
-    this.loading = true;
-
-    /*if (this.imageUrl) {
-      URL.revokeObjectURL(this.imageUrl);
-      this.imageUrl = '';
-    }*/
-
-    this.openiaservice.imagengeneration(this.prompt).subscribe({
-      next: (blob: Blob) => {
-        this.imageUrl = URL.createObjectURL(blob);
-        this.loading = false;
-        console.log("Imagen recibida",this.imageUrl)
-        this.cdRefor.detectChanges();
-      },
-      error: (err) => {
-        console.log(err);
-        this.imageUrl = '';
-        this.loading = false;
-        alert('error al generar la imagen');
-      },
-    });
+    this.http
+      .post('/api/imagen-generada', { prompt: this.prompt }, { responseType: 'blob' })
+      .subscribe({
+        next: (blob) => {
+          const url = URL.createObjectURL(blob);
+          this.imageUrl = url;
+        },
+        error: () => {
+          this.imageUrl = '';
+          alert('Error al generar la imagen');
+        },
+      });
   }
 }
