@@ -119,5 +119,8 @@ export const generacionImagen = async (req, res) => {
     res.setHeader("Content-Type", "image/png");
     console.log("Imagen enviada")
     return res.status(200).send(imageBuffer);
-  } catch (error) {}
+  } catch (error) {
+    console.log(error)
+    return res.status(400).json({ message: "Error al generar la imagen", error });
+  }
 };
