@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { OpenAiService } from 'app/presentation/services/openai.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-image-generation-page',
@@ -11,24 +12,41 @@ import { HttpClient } from '@angular/common/http';
 })
 export default class ImageGenerationPageComponent {
   prompt: string = '';
-  imageUrl: string | null = null;
+  imageUrl: string = '';
+  loading: boolean = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private openiaservice: OpenAiService, private cdRefor:ChangeDetectorRef) {}
 
   generarImagen() {
     if (!this.prompt.trim()) return;
 
-    this.http
-      .post('/api/imagen-generada', { prompt: this.prompt }, { responseType: 'blob' })
-      .subscribe({
-        next: (blob) => {
-          const url = URL.createObjectURL(blob);
-          this.imageUrl = url;
-        },
-        error: () => {
-          this.imageUrl = '';
-          alert('Error al generar la imagen');
-        },
-      });
+    this.loading = true;
+
+    /*if (this.imageUrl) {
+      URL.revokeObjectURL(this.imageUrl);
+      this.imageUrl = '';
+    }*/
+
+    this.openiaservice.imagengeneration(this.prompt).subscribe({
+      next: (blob: Blob) => {
+        this.imageUrl = URL.createObjectURL(blob);
+        this.loading = false;
+        console.log("Imagen recibida",this.imageUrl)
+        this.cdRefor.detectChanges();
+      },
+      error: (err) => {
+        console.log(err);
+        this.imageUrl = '';
+        this.loading = false;
+        alert('error al generar la imagen');
+      },
+    });
   }
+
+  mostrarImagen(event: Event) {
+  const img = event.target as HTMLImageElement;
+  img.classList.remove('opacity-0', 'translate-y-4');
+  img.classList.add('opacity-100', 'translate-y-0');
+}
+
 }

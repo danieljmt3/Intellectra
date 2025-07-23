@@ -103,13 +103,16 @@ export const textoavoz = async (req, res) => {
 export const generacionImagen = async (req, res) => {
   const hf = new InferenceClient(hukey);
   const { prompt } = req.body;
-
+   
+  console.log(prompt)
   try {
+    console.log("Generando")
     const generalIMG = await hf.textToImage({
       provider:"hf-inference",
       model: "black-forest-labs/FLUX.1-dev",
       inputs: prompt,
     });
+    
     const buffer = await generalIMG.arrayBuffer();
     const imageBuffer = Buffer.from(buffer);
 
