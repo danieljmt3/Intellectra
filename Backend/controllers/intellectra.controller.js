@@ -1,4 +1,6 @@
-import { InferenceClient} from "@huggingface/inference";
+import { InferenceClient } from "@huggingface/inference";
+import promptModel from "../models/prompt.model.js";
+import userModel from "../models/user.model.js";
 import { elevenApi, hukey } from "../config/config.js";
 import { ElevenLabsClient } from "elevenlabs";
 import { Buffer } from "buffer";
@@ -7,25 +9,38 @@ export const corregiOrt = async (req, res) => {
   const hf = new InferenceClient(hukey);
   const { prompt } = req.body;
 
+  const UserExist = await userModel.findById(req.userId);
+
   try {
+    if (!UserExist) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
     console.log("Solicitando corrección a HuggingFace...");
     const consulta = await hf.chatCompletion({
       model: "deepseek-ai/DeepSeek-R1-0528",
-      provider:"fireworks-ai",
-      messages:[
+      provider: "fireworks-ai",
+      messages: [
         {
-          role:"user",
-          content:`Corrige los errores ortográficos en el siguiente texto y damelo con los errores corregidos: ${prompt}`
-        }
+          role: "user",
+          content: `Corrige los errores ortográficos en el siguiente texto y damelo con los errores corregidos: ${prompt}`,
+        },
       ],
     });
     console.log("Respuesta completa del modelo:", consulta);
 
-    
+    const newprompt = new promptModel({
+      content: prompt,
+      user: UserExist._id,
+    });
 
-    return res.status(200).json({ correctedText: consulta.choices[0].message.content });
+    await newprompt.save();
+
+    return res
+      .status(200)
+      .json({ correctedText: consulta.choices[0].message.content });
   } catch (error) {
-    console.log("Existe un error:",error)
+    console.log("Existe un error:", error);
     return res.status(400).json({
       error: "Error al generar la corrección",
       details: error.message,
@@ -39,11 +54,17 @@ export const traductor = async (req, res) => {
 
   //console.log(prompt,lenbase,lenobjet,sourceLang,targetLang)
 
+  const UserExist = await userModel.findById(req.userId);
+
   if (!lenbase || !lenobjet) {
     return res.status(400).json({ error: "Código de idioma no soportado" });
   }
 
   try {
+    if (!UserExist) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
     const traduccir = await hf.translation({
       model: "facebook/mbart-large-50-many-to-many-mmt",
       inputs: prompt,
@@ -52,6 +73,13 @@ export const traductor = async (req, res) => {
         tgt_lang: lenobjet,
       },
     });
+
+    const newPrompt = new promptModel({
+      content: prompt,
+      user: UserExist._id,
+    });
+
+    newPrompt.save();
 
     res.status(200).json({ translatedText: traduccir.translation_text });
   } catch (error) {
@@ -72,7 +100,13 @@ export const textoavoz = async (req, res) => {
   const generoSelect = genero.toLowerCase();
   const VozAUsar = vocesID[generoSelect];
 
+  const UserExist = await userModel.findById(req.userId);
+
   try {
+    if (!UserExist) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
     const voz = await elevenLab.textToSpeech.convert(VozAUsar, {
       text: prompt,
       model_id: "eleven_multilingual_v2",
@@ -83,9 +117,8 @@ export const textoavoz = async (req, res) => {
     }
     const buffer = Buffer.concat(chunks);
 
-
     res.set({
-      "Content-Type": "audio/mpeg", 
+      "Content-Type": "audio/mpeg",
       "Content-Disposition": `attachment; filename=output_${generoSelect}.mp3`,
       "Content-Length": buffer.length,
     });
@@ -93,6 +126,15 @@ export const textoavoz = async (req, res) => {
       `[ElevenLabs TTS] Texto recibido: "${prompt}" con voz "${generoSelect}"`
     );
     console.log("[ElevenLabs TTS] Conversión exitosa.");
+
+    const newPrompt = new promptModel({
+      content: prompt,
+      user: UserExist._id,
+    });
+
+    newPrompt.save();
+    console.log("Prompt guardado");
+
     return res.send(buffer);
   } catch (error) {
     console.log(error);
@@ -103,24 +145,39 @@ export const textoavoz = async (req, res) => {
 export const generacionImagen = async (req, res) => {
   const hf = new InferenceClient(hukey);
   const { prompt } = req.body;
-   
-  console.log(prompt)
+
+  console.log(prompt);
+
+  const UserExist = await userModel.findById(req.userId);
   try {
-    console.log("Generando")
+    if (!UserExist) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    console.log("Generando");
     const generalIMG = await hf.textToImage({
-      provider:"hf-inference",
+      provider: "hf-inference",
       model: "black-forest-labs/FLUX.1-dev",
       inputs: prompt,
     });
-    
+
     const buffer = await generalIMG.arrayBuffer();
     const imageBuffer = Buffer.from(buffer);
 
+    const newPrompt = new promptModel({
+      content: prompt,
+      user: UserExist._id,
+    });
+
+    newPrompt.save();
+
     res.setHeader("Content-Type", "image/png");
-    console.log("Imagen enviada")
+    console.log("Imagen enviada");
     return res.status(200).send(imageBuffer);
   } catch (error) {
-    console.log(error)
-    return res.status(400).json({ message: "Error al generar la imagen", error });
+    console.log(error);
+    return res
+      .status(400)
+      .json({ message: "Error al generar la imagen", error });
   }
 };

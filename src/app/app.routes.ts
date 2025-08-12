@@ -2,14 +2,34 @@ import { Routes } from '@angular/router';
 import { DashboardLayoutComponent } from './presentation/layouts/dashboardLayout/dashboardLayout.component';
 
 export const routes: Routes = [
-  {
+
+  //Ruta inicial
+    {
     path: '',
+    redirectTo: 'login',
+    pathMatch: 'full',
+  },
+
+  //Ruta login
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./presentation/pages/login/login.component').then(
+        (m) => m.LoginComponent
+      ),
+  },
+
+  //Rutas protegidas con dashboard
+  {
+    path: 'dashboard',
     component: DashboardLayoutComponent,
     children: [
       {
         path: 'orthography',
         loadComponent: () =>
-          import('./presentation/pages/orthographyPage/orthographyPage.component'),
+          import(
+            './presentation/pages/orthographyPage/orthographyPage.component'
+          ),
         data: {
           icon: 'fa-solid fa-spell-check',
           title: 'Ortografía',
@@ -19,9 +39,7 @@ export const routes: Routes = [
       {
         path: 'translate',
         loadComponent: () =>
-          import('./presentation/pages/translatePage/translatePage.component'
-            
-          ),
+          import('./presentation/pages/translatePage/translatePage.component'),
         data: {
           icon: 'fa-solid fa-language',
           title: 'Traducir',
@@ -61,12 +79,16 @@ export const routes: Routes = [
           title: 'Asistente',
           description: 'Información del asistente',
         },
-      },
-      {
-        path: '**',
-        redirectTo: 'orthography',
-        pathMatch: 'full',
-      },
+      },{
+        path:'',
+        redirectTo:'orthography',
+        pathMatch:'full'
+      }
     ],
+  },
+  //Ruta global (comodin)
+  {
+    path: '**',
+    redirectTo: 'login',
   },
 ];

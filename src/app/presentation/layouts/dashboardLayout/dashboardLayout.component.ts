@@ -17,6 +17,8 @@ import { routes } from '../../../app.routes';
 } )
 export class DashboardLayoutComponent {
 
-  public routes = routes[0].children?.filter( (route) => route.data );
+  public routes = routes
+  .find(route=> route.path === 'dashboard')
+  ?.children?.filter(route=>route.data)?? []
 
 }

@@ -124,13 +124,13 @@
                     </div>
                     
                     <div class="flex mb-8 border-b">
-                        <div id="login-tab" class="form-tab w-1/3 text-center active" onclick="showTab('login')">Iniciar Sesión</div>
-                        <div id="register-tab" class="form-tab w-1/3 text-center" onclick="showTab('register')">Registrarse</div>
-                        <div id="forgot-tab" class="form-tab w-1/3 text-center" onclick="showTab('forgot')">Recuperar</div>
+                        <div id="login-tab" class="form-tab w-1/3 text-center active" (click)="showTab('login')">Iniciar Sesión</div>
+                        <div id="register-tab" class="form-tab w-1/3 text-center" (click)="showTab('register')">Registrarse</div>
+                        <div id="forgot-tab" class="form-tab w-1/3 text-center" (click)="showTab('forgot')">Recuperar</div>
                     </div>
                     
                     <div id="login-form" class="auth-form block">
-                        <form onsubmit="handleLogin(event)">
+                        <form (submit)="handleLogin($event)">
                             <div class="mb-4">
                                 <label for="login-email" class="block text-gray-700 text-sm font-medium mb-2">Correo Electrónico</label>
                                 <input type="email" id="login-email" required class="w-full px-4 py-3 rounded-lg input-field border focus:outline-none focus:border-indigo-500" placeholder="tucorreo@ejemplo.com">
@@ -144,7 +144,7 @@
                                     <input type="checkbox" id="remember-me" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
                                     <label for="remember-me" class="ml-2 block text-sm text-gray-700">Recordarme</label>
                                 </div>
-                                <a href="#" class="text-sm text-indigo-600 hover:text-indigo-500 forgot-pass" onclick="showTab('forgot')">¿Olvidaste tu contraseña?</a>
+                                <a href="#" class="text-sm text-indigo-600 hover:text-indigo-500 forgot-pass" (click)="showTab('forgot')">¿Olvidaste tu contraseña?</a>
                             </div>
                             <button type="submit" class="w-full py-3 px-4 rounded-lg text-white font-semibold auth-btn focus:outline-none">Iniciar Sesión</button>
                         </form>
@@ -175,7 +175,7 @@
                     </div>
                     
                     <div id="register-form" class="auth-form hidden">
-                        <form onsubmit="handleRegister(event)">
+                        <form (submit)="handleRegister($event)">
                             <div class="grid grid-cols-2 gap-4 mb-4">
                                 <div>
                                     <label for="register-firstname" class="block text-gray-700 text-sm font-medium mb-2">Nombre</label>
@@ -207,7 +207,7 @@
                             <button type="submit" class="w-full py-3 px-4 rounded-lg text-white font-semibold auth-btn focus:outline-none">Registrarse</button>
                         </form>
                         <div class="mt-4 text-center">
-                            <p class="text-sm text-gray-600">¿Ya tienes una cuenta? <a href="#" class="text-indigo-600 hover:text-indigo-500" onclick="showTab('login')">Inicia Sesión</a></p>
+                            <p class="text-sm text-gray-600">¿Ya tienes una cuenta? <a href="#" class="text-indigo-600 hover:text-indigo-500" (click)="showTab('login')">Inicia Sesión</a></p>
                         </div>
                     </div>
                     
@@ -224,88 +224,12 @@
                             <button type="submit" class="w-full py-3 px-4 rounded-lg text-white font-semibold auth-btn focus:outline-none">Enviar enlace</button>
                         </form>
                         <div class="mt-4 text-center">
-                            <p class="text-sm text-gray-600">Volver al <a href="#" class="text-indigo-600 hover:text-indigo-500" onclick="showTab('login')">Inicio de sesión</a></p>
+                            <p class="text-sm text-gray-600">Volver al <a href="#" class="text-indigo-600 hover:text-indigo-500" (click)="showTab('login')">Inicio de sesión</a></p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-
-        function showTab(tabName) {
-            document.querySelectorAll('.auth-form').forEach(form => {
-                form.classList.add('hidden');
-            });
-            document.querySelectorAll('.form-tab').forEach(tab => {
-                tab.classList.remove('active', 'text-white');
-                tab.classList.add('text-gray-600');
-            });
-            
-            document.getElementById(`${tabName}-form`).classList.remove('hidden');
-            document.getElementById(`${tabName}-tab`).classList.add('active', 'text-white');
-            document.getElementById(`${tabName}-tab`).classList.remove('text-gray-600');
-        }
-        
-        function showNotification(message, type = 'success') {
-            const notification = document.getElementById('notification');
-            notification.className = `p-4 mb-6 rounded-lg bg-${type === 'success' ? 'green' : 'red'}-100 text-${type === 'success' ? 'green' : 'red'}-800`;
-            notification.innerHTML = message;
-            notification.classList.remove('hidden');
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    notification.classList.add('hidden');
-                }, 300);
-            }, 5000);
-        }
-        
-        function handleLogin(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            setTimeout(() => {
-                showNotification('Inicio de sesión exitoso. Redirigiendo...', 'success');
-                console.log('Login submitted:', { email, password });
-            }, 1000);
-        }
-        
-        function handleRegister(e) {
-            e.preventDefault();
-            
-            const firstName = document.getElementById('register-firstname').value;
-            const lastName = document.getElementById('register-lastname').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            const confirmPassword = document.getElementById('register-confirm').value;
-            
-            if (password !== confirmPassword) {
-                showNotification('Las contraseñas no coinciden', 'error');
-                return;
-            }
-            
-            setTimeout(() => {
-                showNotification('Registro exitoso. Por favor verifica tu correo electrónico.', 'success');
-                console.log('Register submitted:', { firstName, lastName, email, password });
-                showTab('login');
-            }, 1000);
-        }
-        
-        function handleForgotPassword(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('forgot-email').value;
-            
-            setTimeout(() => {
-                showNotification('Hemos enviado un enlace de recuperación a tu correo electrónico.', 'success');
-                console.log('Forgot password submitted:', { email });
-            }, 1000);
-        }
-    </script>
 </body>
 </html>
