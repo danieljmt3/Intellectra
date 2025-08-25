@@ -13,15 +13,21 @@
 
     <!-- Nav Links -->
     @for (route of routes; track route.path) {
-      <app-sidebar-menu-item
-        [description]="route.data!['description']"
-        [icon]="route.data!['icon']"
-        [title]="route.data!['title']"
-        [path]="route.path!"
-      />
+    <app-sidebar-menu-item
+      [description]="route.data!['description']"
+      [icon]="route.data!['icon']"
+      [title]="route.data!['title']"
+      [path]="route.path!"
+    />
 
     }
     <!-- End Nav Links -->
+    <button
+      (click)="logout()"
+      class="mt-auto bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl"
+    >
+      Cerrar sesión
+    </button>
   </nav>
 
   <section

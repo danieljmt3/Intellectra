@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule,Router } from '@angular/router';
 import { SidebarMenuItemComponent } from '../../components/sidebarMenuItem/sidebarMenuItem.component';
 import { routes } from '../../../app.routes';
 
@@ -20,5 +20,12 @@ export class DashboardLayoutComponent {
   public routes = routes
   .find(route=> route.path === 'dashboard')
   ?.children?.filter(route=>route.data)?? []
+
+  constructor (private router:Router){}
+
+  logout(){
+    localStorage.clear();
+    this.router.navigate(['login'])
+  }
 
 }
