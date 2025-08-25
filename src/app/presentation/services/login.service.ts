@@ -22,6 +22,8 @@ export class loginServices {
         return this.http.post(`${this.ServerURL}/user/logout`,{},{withCredentials:true})
     }
 
+    
+
 
 
 }

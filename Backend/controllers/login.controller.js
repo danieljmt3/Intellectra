@@ -31,6 +31,7 @@ export const registrar = async (req, res) => {
 
     res.status(201).json({ message: "Usuario registrado" });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: "Error interno", error: error.message });
   }
 };

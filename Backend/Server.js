@@ -6,6 +6,7 @@ import multer from "multer";
 import cookieParser from "cookie-parser";
 import loginroute from "./routes/intellectra.login.routes.js";
 import mongooconnect from "./config/BD.js";
+import pass from "./routes/intellectra.password.routes.js";
 
 
 
@@ -23,7 +24,7 @@ mongooconnect();
 
 app.use('/intellectra',loginroute);
 app.use('/intellectra',rutasIntellectra);
-
+app.use('/intellectra',pass)
 
 
 app.listen(puerto,()=>{

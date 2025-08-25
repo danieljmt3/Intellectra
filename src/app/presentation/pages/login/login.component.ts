@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { loginServices } from 'app/presentation/services/login.service';
+import { passwordRestServices } from 'app/presentation/services/passwrod.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -87,7 +88,7 @@ import { Router } from '@angular/router';
   ],
 })
 export class LoginComponent {
-  constructor(private loginservice: loginServices, private router:Router) {}
+  constructor(private loginservice: loginServices, private passRestService:passwordRestServices,private router: Router) {}
 
   showTab(tabName: string) {
     document.querySelectorAll('.auth-form').forEach((form) => {
@@ -137,9 +138,9 @@ export class LoginComponent {
     this.loginservice.login(email, password).subscribe({
       next: (res) => {
         this.showNotification('Inicio de sesión exitoso', 'success');
-        localStorage.setItem('token',res.token)
+        localStorage.setItem('token', res.token);
         console.log('Token guardado en local', res.token);
-        this.router.navigate(['dashboard'])
+        this.router.navigate(['dashboard']);
       },
       error: (err) => {
         this.showNotification(
@@ -152,11 +153,21 @@ export class LoginComponent {
 
   handleRegister(event: Event) {
     event.preventDefault();
-    const firstName = (document.getElementById('register-firstname') as HTMLInputElement).value;
-    const lastName = (document.getElementById('register-lastname') as HTMLInputElement).value;
-    const email = (document.getElementById('register-email') as HTMLInputElement).value;
-    const password = (document.getElementById('register-password') as HTMLInputElement).value;
-    const confirmPassword = (document.getElementById('register-confirm') as HTMLInputElement).value;
+    const firstName = (
+      document.getElementById('register-firstname') as HTMLInputElement
+    ).value;
+    const lastName = (
+      document.getElementById('register-lastname') as HTMLInputElement
+    ).value;
+    const email = (
+      document.getElementById('register-email') as HTMLInputElement
+    ).value;
+    const password = (
+      document.getElementById('register-password') as HTMLInputElement
+    ).value;
+    const confirmPassword = (
+      document.getElementById('register-confirm') as HTMLInputElement
+    ).value;
 
     if (password !== confirmPassword) {
       this.showNotification('Las contraseñas no coinciden', 'error');
@@ -171,19 +182,25 @@ export class LoginComponent {
         this.showTab('login');
       },
       error: (err) => {
-        this.showNotification(err.error?.message || 'Error al registrarse', 'error');
-      }
+        this.showNotification(
+          err.error?.message || 'Error al registrarse',
+          'error'
+        );
+      },
     });
   }
 
-  cerrarSesion(){
+  cerrarSesion() {
     this.loginservice.logout().subscribe({
       next: () => {
         this.showNotification('Sesión cerrada', 'success');
       },
       error: (err) => {
-        this.showNotification(err.error?.message || 'Error al cerrar sesión', 'error');
-      }
+        this.showNotification(
+          err.error?.message || 'Error al cerrar sesión',
+          'error'
+        );
+      },
     });
   }
 
@@ -193,12 +210,26 @@ export class LoginComponent {
     const email = (document.getElementById('forgot-email') as HTMLInputElement)
       .value;
 
-    setTimeout(() => {
-      this.showNotification(
-        'Hemos enviado un enlace de recuperación a tu correo electrónico.',
-        'success'
-      );
-      console.log('Forgot password submitted:', { email });
-    }, 1000);
+    if (!email) {
+      this.showNotification('Porfavor ingresa un correo valido');
+      return;
+    }
+
+    this.passRestService.requestRestPassword(email).subscribe({
+      next: (res) => {
+        this.showNotification(
+          'Hemos enviado un enlace de recuperación a tu correo electrónico.',
+          'success'
+        );
+        console.log('Se envió el correo', email);
+      },
+      error: (err) => {
+        console.log(err);
+        this.showNotification(
+          err.error?.message || 'Ocurrió un error al enviar el enlace.',
+          'error'
+        );
+      },
+    });
   }
 }

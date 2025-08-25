@@ -19,6 +19,13 @@ export const routes: Routes = [
       ),
   },
 
+  //Ruta restablecer
+  {
+    path:'reset-password',
+    loadComponent:()=>
+      import('./presentation/pages/ResetPassword/ResetPassword.component').then((m)=>m.ResetPasswordComponet)
+  },
+
   //Rutas protegidas con dashboard
   {
     path: 'dashboard',
