@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { DashboardLayoutComponent } from './presentation/layouts/dashboardLayout/dashboardLayout.component';
+import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
 
@@ -30,7 +31,14 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardLayoutComponent,
+    canActivateChild:[AuthGuard],
     children: [
+
+      {
+        path:'',
+        redirectTo:'orthography',
+        pathMatch:'full'
+      },
       {
         path: 'orthography',
         loadComponent: () =>

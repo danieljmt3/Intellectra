@@ -139,7 +139,6 @@ export class LoginComponent {
       next: (res) => {
         this.showNotification('Inicio de sesión exitoso', 'success');
         localStorage.setItem('token', res.token);
-        console.log('Token guardado en local', res.token);
         this.router.navigate(['dashboard']);
       },
       error: (err) => {

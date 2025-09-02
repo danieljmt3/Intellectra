@@ -117,7 +117,7 @@
 
 <div id="asistente-soporte" role="form" aria-labelledby="titulo-asistente">
   <h3 id="titulo-asistente">Asistente de Soporte</h3>
-  <form id="form-soporte" novalidate>
+  <form (submit)="report($event)" novalidate>
     <label for="nombre">Nombre:</label>
     <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required aria-required="true" />
 
@@ -132,36 +132,4 @@
   <div id="mensaje-respuesta" role="alert" aria-live="polite" style="display:none;"></div>
 </div>
 
-<script>
-  const form = document.getElementById('form-soporte');
-  const mensajeRespuesta = document.getElementById('mensaje-respuesta');
 
-  form.addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    const nombre = form.nombre.value.trim();
-    const email = form.email.value.trim();
-    const problema = form.problema.value.trim();
-
-    if (!nombre || !email || !problema) {
-      mensajeRespuesta.style.color = '#e74c3c'; // rojo
-      mensajeRespuesta.textContent = 'Por favor completa todos los campos.';
-      mensajeRespuesta.style.display = 'block';
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      mensajeRespuesta.style.color = '#e74c3c';
-      mensajeRespuesta.textContent = 'Por favor ingresa un correo electrónico válido.';
-      mensajeRespuesta.style.display = 'block';
-      return;
-    }
-
-    mensajeRespuesta.style.color = '#27ae60'; // verde
-    mensajeRespuesta.textContent = 'Gracias por contactarnos, te responderemos pronto.';
-    mensajeRespuesta.style.display = 'block';
-
-    form.reset();
-  });
-</script>

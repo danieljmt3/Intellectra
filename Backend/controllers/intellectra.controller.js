@@ -1,9 +1,11 @@
 import { InferenceClient } from "@huggingface/inference";
 import promptModel from "../models/prompt.model.js";
 import userModel from "../models/user.model.js";
-import { elevenApi, hukey } from "../config/config.js";
+import { elevenApi, emails, hukey, PassApp, support } from "../config/config.js";
 import { ElevenLabsClient } from "elevenlabs";
 import { Buffer } from "buffer";
+import ReportModel from "../models/reports.model.js";
+import nodemailer from "nodemailer"
 
 export const corregiOrt = async (req, res) => {
   const hf = new InferenceClient(hukey);
@@ -179,5 +181,47 @@ export const generacionImagen = async (req, res) => {
     return res
       .status(400)
       .json({ message: "Error al generar la imagen", error });
+  }
+};
+
+export const report = async (req, res) => {
+  const { nombre, email, asunto } = req.body;
+
+  console.log("Recibidos", nombre, email, asunto);
+
+  try {
+    const newReport = new ReportModel({
+      nombre,
+      email,
+      asunto,
+    });
+
+    newReport.save();
+
+    const trasnport = nodemailer.createTransport({
+      service:'gmail',
+      auth:{
+        user:email,
+        pass:PassApp
+      }
+    })
+
+    const mailOPtion={
+      to:support,
+      from:emails,
+      subject:`Problema de ${nombre}`,
+      text:`nombre:${nombre} \n correo:${email} \n Tiene el siguiente problema:\n ${asunto}`
+    }
+
+    await trasnport.sendMail(mailOPtion)
+
+
+    console.log("Report guardado");
+    res.status(200).json({ message: "Reporte enviado satisfactoriamente" });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(400)
+      .json({ message: "Error al enviar el report", error });
   }
 };

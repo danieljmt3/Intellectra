@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, Route } from '@angular/router';
+import Swal from 'sweetalert2';
 import { passwordRestServices } from 'app/presentation/services/passwrod.service';
 
 @Component({
@@ -42,18 +43,26 @@ export class ResetPasswordComponet {
       .RestPassword(this.id, this.token, this.NewPassword)
       .subscribe({
         next: (res) => {
-          this.mensaje = 'La contraseña ha sido restablecida exitosamente';
-          this.error = '';
-          setTimeout(() => {
-            this.router.navigate(['/login']);
-          }, 3000);
+          Swal.fire({
+            icon:"success",
+            title:"Contraseña restablecida",
+            text:"Contraseña restablecida con exito,",
+            confirmButtonColor:"#1d4ed8",
+            timer:3000,
+            timerProgressBar:true,
+            showConfirmButton:false
+          }).then(()=>{
+            this.router.navigate(['/login'])
+          });
         },
         error: (err) => {
           console.log(err);
-          this.error =
-            err.error?.message ||
-            'Ocurrió un error al restablecer la contraseña.';
-          this.mensaje = '';
+          Swal.fire({
+            icon:"error",
+            title:"Erro inesperado",
+            text:"No se pudo cambiar la contraseña",
+            confirmButtonColor:"#1d4ed8"
+          })
         },
       });
   }
