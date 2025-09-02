@@ -1,1 +1,168 @@
-<p>assistantPage works!</p>,
+<!-- Módulo de Asistente de Soporte con botón azul oscuro -->
+<style>
+  /* Reset básico para inputs y botones */
+  input, textarea, button {
+    font-family: inherit;
+    font-size: 1rem;
+  }
+
+  #asistente-soporte {
+    max-width: 700px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 30px 40px 35px;
+    box-sizing: border-box;
+    color: #2c3e50;
+  }
+
+  #asistente-soporte h3 {
+    margin-bottom: 25px;
+    font-weight: 700;
+    font-size: 2rem;
+    text-align: center;
+    color: #34495e;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #34495e;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  textarea {
+    width: 100%;
+    padding: 14px 18px;
+    margin-bottom: 22px;
+    border: 1.5px solid #bdc3c7;
+    border-radius: 10px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    resize: vertical;
+    box-sizing: border-box;
+    font-size: 1.1rem;
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  textarea:focus {
+    border-color: #2980b9;
+    box-shadow: 0 0 8px rgba(41, 128, 185, 0.3);
+    outline: none;
+  }
+
+  button {
+    width: 100%;
+    background-color: #1a237e; /* azul oscuro */
+    color: white;
+    font-weight: 700;
+    font-size: 1.2rem;
+    padding: 16px 0;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 12px rgba(26, 35, 126, 0.6);
+  }
+
+  button:hover,
+  button:focus {
+    background-color: #0d154b; /* azul más oscuro */
+    box-shadow: 0 6px 16px rgba(13, 21, 75, 0.8);
+    outline: none;
+  }
+
+  #mensaje-respuesta {
+    margin-top: 22px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-align: center;
+    min-height: 28px;
+  }
+
+  /* Responsive para pantallas pequeñas */
+  @media (max-width: 720px) {
+    #asistente-soporte {
+      margin: 20px 15px;
+      padding: 25px 20px 30px;
+      max-width: 100%;
+    }
+
+    #asistente-soporte h3 {
+      font-size: 1.6rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      font-size: 1rem;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+    }
+
+    button {
+      font-size: 1.1rem;
+      padding: 14px 0;
+    }
+
+    #mensaje-respuesta {
+      font-size: 1rem;
+      margin-top: 18px;
+      min-height: 24px;
+    }
+  }
+</style>
+
+<div id="asistente-soporte" role="form" aria-labelledby="titulo-asistente">
+  <h3 id="titulo-asistente">Asistente de Soporte</h3>
+  <form id="form-soporte" novalidate>
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required aria-required="true" />
+
+    <label for="email">Correo electrónico:</label>
+    <input type="email" id="email" name="email" placeholder="tu@correo.com" required aria-required="true" />
+
+    <label for="problema">Describe tu problema:</label>
+    <textarea id="problema" name="problema" rows="5" placeholder="Cuéntanos qué sucede..." required aria-required="true"></textarea>
+
+    <button type="submit" aria-label="Enviar mensaje de soporte">Enviar</button>
+  </form>
+  <div id="mensaje-respuesta" role="alert" aria-live="polite" style="display:none;"></div>
+</div>
+
+<script>
+  const form = document.getElementById('form-soporte');
+  const mensajeRespuesta = document.getElementById('mensaje-respuesta');
+
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const nombre = form.nombre.value.trim();
+    const email = form.email.value.trim();
+    const problema = form.problema.value.trim();
+
+    if (!nombre || !email || !problema) {
+      mensajeRespuesta.style.color = '#e74c3c'; // rojo
+      mensajeRespuesta.textContent = 'Por favor completa todos los campos.';
+      mensajeRespuesta.style.display = 'block';
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      mensajeRespuesta.style.color = '#e74c3c';
+      mensajeRespuesta.textContent = 'Por favor ingresa un correo electrónico válido.';
+      mensajeRespuesta.style.display = 'block';
+      return;
+    }
+
+    mensajeRespuesta.style.color = '#27ae60'; // verde
+    mensajeRespuesta.textContent = 'Gracias por contactarnos, te responderemos pronto.';
+    mensajeRespuesta.style.display = 'block';
+
+    form.reset();
+  });
+</script>
