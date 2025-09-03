@@ -39,6 +39,7 @@ export default class TextToAudioPageComponent {
       .texttospeech(this.userText, this.selectedGender)
       .subscribe({
         next: (audioBlob: Blob) => {
+          console.log("se envio:",this.userText,this.selectedGender)
           console.log('Audio Blob recibido:', audioBlob);
           const url = URL.createObjectURL(audioBlob);
           this.audioUrl = this.sanitizer.bypassSecurityTrustUrl(url);

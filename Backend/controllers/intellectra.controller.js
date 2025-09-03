@@ -105,6 +105,7 @@ export const textoavoz = async (req, res) => {
   const UserExist = await userModel.findById(req.userId);
 
   try {
+    console.log(prompt,genero)
     if (!UserExist) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
