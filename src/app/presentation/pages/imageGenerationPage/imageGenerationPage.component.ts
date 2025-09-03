@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { OpenAiService } from 'app/presentation/services/openai.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-image-generation-page',
@@ -21,7 +22,7 @@ export default class ImageGenerationPageComponent {
     if (!this.prompt.trim()) return;
 
     this.loading = true;
-
+    console.log(environment.apiurl)
     /*if (this.imageUrl) {
       URL.revokeObjectURL(this.imageUrl);
       this.imageUrl = '';

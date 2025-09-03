@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, ChangeDetectorRef } from '@angular/
 import { FormsModule } from '@angular/forms';
 import { OpenAiService } from 'app/presentation/services/openai.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-text-to-audio-page',
@@ -30,7 +31,7 @@ export default class TextToAudioPageComponent {
       alert('Por favor, escribe algún texto.');
       return;
     }
-
+    console.log(environment.apiurl)
     this.isLoading = true;
     this.audioUrl = null;
 
