@@ -105,7 +105,7 @@ export const textoavoz = async (req, res) => {
   const UserExist = await userModel.findById(req.userId);
 
   try {
-    console.log(prompt,genero)
+    console.log(prompt,genero,elevenApi)
     if (!UserExist) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
@@ -149,7 +149,7 @@ export const generacionImagen = async (req, res) => {
   const hf = new InferenceClient(hukey);
   const { prompt } = req.body;
 
-  console.log(prompt);
+  console.log(prompt,hukey);
 
   const UserExist = await userModel.findById(req.userId);
   try {
