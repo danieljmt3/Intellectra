@@ -31,7 +31,7 @@ export const registrar = async (req, res) => {
 
     res.status(201).json({ message: "Usuario registrado" });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({ message: "Error interno", error: error.message });
   }
 };
@@ -55,27 +55,10 @@ export const login = async (req, res) => {
     }
 
     const TK = jwt.sign({ id: userexist.id }, JWTSC, { expiresIn: "1h" });
-    /*res
-      .cookie("token", TK, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "none",
-        maxAge: 60 * 60 * 1000,
-      })
-      .json({ message: "Inicio completado" });*/
 
-    res.json({message:"Inicio completado",token:TK})
+    res.json({ message: "Inicio completado", token: TK });
   } catch (error) {
     console.log("Error al iniciar sesión", error);
   }
 };
 
-/*
-export const logout = async (req, res) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: true,
-  });
-  res.status(200).json({ message: "Sesión cerrada exitosamente" });
-};*/
