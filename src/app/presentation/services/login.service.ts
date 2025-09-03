@@ -1,12 +1,13 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
+import { environment } from "environments/environment";
 
 @Injectable({providedIn:'root'})
 
 export class loginServices {
 
-    private ServerURL="http://localhost:3000/intellectra"; //url de la api backend
+    private ServerURL=environment.apiurl; //url de la api backend
 
     constructor(private http:HttpClient) {}
 

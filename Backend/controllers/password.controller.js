@@ -1,4 +1,4 @@
-import { emails, JWTSC, PassApp } from "../config/config.js";
+import { emails, JWTSC, PassApp, production } from "../config/config.js";
 import jwt from "jsonwebtoken";
 import userModel from "../models/user.model.js";
 import nodemailer from "nodemailer";
@@ -22,7 +22,7 @@ export const requestpasswordRest = async (req, res, next) => {
       { expiresIn: "15m" }
     );
 
-    const resetUrl = `http://localhost:4200/reset-password?id=${userExist._id}&token=${Token}`;
+    const resetUrl = `${production}/reset-password?id=${userExist._id}&token=${Token}`;
 
     const trasporter = nodemailer.createTransport({
       service: "gmail",

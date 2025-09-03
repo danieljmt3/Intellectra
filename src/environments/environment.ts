@@ -1,4 +1,4 @@
 export const environment = {
     production:true,
-    apiurl:'/intellectra'
+    apiurl:'https://intellectra.onrender.com/intellectra'
 };

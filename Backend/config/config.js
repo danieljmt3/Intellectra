@@ -10,3 +10,4 @@ export const JWTSC=process.env.JWT_Secret
 export const emails=process.env.emails;
 export const PassApp=process.env.PassAplication;
 export const support=process.env.emailSuport;
+export const production=process.env.production
