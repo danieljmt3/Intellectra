@@ -91,8 +91,9 @@ export const traductor = async (req, res) => {
 };
 
 export const textoavoz = async (req, res) => {
+  console.log("Eleven API Key en Render:", `"${elevenApi}"`, elevenApi?.length);
   const elevenLab = new ElevenLabsClient({
-    apiKey: elevenApi,
+    apiKey: elevenApi.trim(),
   });
   const vocesID = {
     mujer: "FGY2WhTYpPnrIDTdsKH5",
