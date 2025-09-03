@@ -6,6 +6,9 @@ import { ElevenLabsClient } from "elevenlabs";
 import { Buffer } from "buffer";
 import ReportModel from "../models/reports.model.js";
 import nodemailer from "nodemailer"
+import { configDotenv } from "dotenv";
+
+configDotenv();
 
 export const corregiOrt = async (req, res) => {
   const hf = new InferenceClient(hukey);
@@ -93,7 +96,7 @@ export const traductor = async (req, res) => {
 export const textoavoz = async (req, res) => {
   console.log("Eleven API Key en Render:", `"${elevenApi}"`, elevenApi?.length);
   const elevenLab = new ElevenLabsClient({
-    apiKey: elevenApi.trim(),
+    apiKey: "sk_1c2dc78257a27170229882e882d4e42343abad3dbfa1a460",
   });
   const vocesID = {
     mujer: "FGY2WhTYpPnrIDTdsKH5",

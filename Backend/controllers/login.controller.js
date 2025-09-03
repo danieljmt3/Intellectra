@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import userModel from "../models/user.model.js";
 import { JWTSC } from "../config/config.js";
 
+
+
 export const registrar = async (req, res) => {
   const { email, name, password } = req.body;
 
