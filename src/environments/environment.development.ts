@@ -1,4 +1,4 @@
 export const environment = {
     production:false,
-    apiurl:'https://intellectra.onrender.com/intellectra'
+    apiurl:'intellectra-production.up.railway.app/intellectra'
 };
