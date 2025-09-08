@@ -1,13 +1,20 @@
-import { emails, JWTSC, PassApp, production } from "../config/config.js";
+import {
+  emails,
+  JWTSC,
+  PassApp,
+  production,
+  puerto,
+} from "../config/config.js";
 import jwt from "jsonwebtoken";
 import userModel from "../models/user.model.js";
 import nodemailer from "nodemailer";
 import { crypt } from "../middleware/hasspassword.js";
+import { getTunnelUrl } from "../middleware/Url.tunnel.js";
 
 export const requestpasswordRest = async (req, res, next) => {
   const { email } = req.body;
 
-  console.log(`Se recibio la solicitud de ${email}`)
+  console.log(`Se recibio la solicitud de ${email}`);
 
   try {
     const userExist = await userModel.findOne({ email });
@@ -21,8 +28,14 @@ export const requestpasswordRest = async (req, res, next) => {
       secret,
       { expiresIn: "15m" }
     );
+    const host = req.headers.host; // Ej: proudly-quebec-palestine-burst.trycloudflare.com
+    const protocol =
+      req.headers["x-forwarded-proto"] || req.protocol || "https";
+    const tunnelUrl = `${protocol}://${host}`;
 
-    const resetUrl = `${production}/reset-password?id=${userExist._id}&token=${Token}`;
+
+    const resetUrl = `${tunnelUrl}/reset-password?id=${userExist._id}&token=${Token}`;
+    console.log(resetUrl);
 
     const trasporter = nodemailer.createTransport({
       service: "gmail",
@@ -44,42 +57,38 @@ export const requestpasswordRest = async (req, res, next) => {
 
     await trasporter.sendMail(mailOPtion);
 
-    console.log(`Se envió el correo a ${email}`)
+    console.log(`Se envió el correo a ${email}`);
     res.json({ message: "Correo de restablecimiento de contraseña" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({message:"Error al enviar un correo"})
+    res.status(500).json({ message: "Error al enviar un correo" });
   }
 };
 
-export const RestPassword= async (req,res)=>{
-  
-  const {id,token}=req.query;
-  const {NewPassword}=req.body;
+export const RestPassword = async (req, res) => {
+  const { id, token } = req.query;
+  const { NewPassword } = req.body;
 
-  console.log(`Se recibio ${id} - ${token} - ${NewPassword}`)
+  console.log(`Se recibio ${id} - ${token} - ${NewPassword}`);
 
   try {
-    const userExist= await userModel.findById(id)
-    if(!userExist){
-      return res.status(404).json({message:"Usuario no encontrado"})
+    const userExist = await userModel.findById(id);
+    if (!userExist) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    const secret = JWTSC+userExist.password
+    const secret = JWTSC + userExist.password;
 
-    jwt.verify(token,secret)
+    jwt.verify(token, secret);
 
-    const HashedPassword= await crypt(NewPassword);
+    const HashedPassword = await crypt(NewPassword);
 
-    userExist.password=HashedPassword;
+    userExist.password = HashedPassword;
     await userExist.save();
 
-    res.json({message:"Contraseña restablecidad exitosamente"})
+    res.json({ message: "Contraseña restablecidad exitosamente" });
   } catch (error) {
     console.log(error);
-    res.status(400).json({message:"No se pudo restablecer la contraseña"})
+    res.status(400).json({ message: "No se pudo restablecer la contraseña" });
   }
-
-
-
-}
+};

@@ -94,9 +94,8 @@ export const traductor = async (req, res) => {
 };
 
 export const textoavoz = async (req, res) => {
-  console.log("Eleven API Key en Render:", `"${elevenApi}"`, elevenApi?.length);
   const elevenLab = new ElevenLabsClient({
-    apiKey: "sk_e467b8155ca30979c7b09011ee6f4365cdebe30e7776739e",
+    apiKey: elevenApi,
   });
   const vocesID = {
     mujer: "FGY2WhTYpPnrIDTdsKH5",
@@ -109,7 +108,6 @@ export const textoavoz = async (req, res) => {
   const UserExist = await userModel.findById(req.userId);
 
   try {
-    console.log(prompt,genero,elevenApi)
     if (!UserExist) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
@@ -129,10 +127,6 @@ export const textoavoz = async (req, res) => {
       "Content-Disposition": `attachment; filename=output_${generoSelect}.mp3`,
       "Content-Length": buffer.length,
     });
-    console.log(
-      `[ElevenLabs TTS] Texto recibido: "${prompt}" con voz "${generoSelect}"`
-    );
-    console.log("[ElevenLabs TTS] Conversión exitosa.");
 
     const newPrompt = new promptModel({
       content: prompt,
@@ -140,7 +134,6 @@ export const textoavoz = async (req, res) => {
     });
 
     newPrompt.save();
-    console.log("Prompt guardado");
 
     return res.send(buffer);
   } catch (error) {
@@ -179,7 +172,6 @@ export const generacionImagen = async (req, res) => {
     newPrompt.save();
 
     res.setHeader("Content-Type", "image/png");
-    console.log("Imagen enviada");
     return res.status(200).send(imageBuffer);
   } catch (error) {
     console.log(error);
@@ -221,7 +213,6 @@ export const report = async (req, res) => {
     await trasnport.sendMail(mailOPtion)
 
 
-    console.log("Report guardado");
     res.status(200).json({ message: "Reporte enviado satisfactoriamente" });
   } catch (error) {
     console.log(error);
