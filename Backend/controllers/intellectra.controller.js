@@ -198,7 +198,7 @@ export const report = async (req, res) => {
     const trasnport = nodemailer.createTransport({
       service:'gmail',
       auth:{
-        user:email,
+        user:emails,
         pass:PassApp
       }
     })

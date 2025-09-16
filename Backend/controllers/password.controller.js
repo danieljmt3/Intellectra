@@ -9,7 +9,6 @@ import jwt from "jsonwebtoken";
 import userModel from "../models/user.model.js";
 import nodemailer from "nodemailer";
 import { crypt } from "../middleware/hasspassword.js";
-import { getTunnelUrl } from "../middleware/Url.tunnel.js";
 
 export const requestpasswordRest = async (req, res, next) => {
   const { email } = req.body;

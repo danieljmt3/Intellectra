@@ -8,9 +8,6 @@ import { JWTSC } from "../config/config.js";
 export const registrar = async (req, res) => {
   const { email, name, password } = req.body;
 
-  console.log("Datos recibidos:");
-  console.log(email, name, password);
-
   try {
     //Verificiar que el usuario existe
     const userexist = await userModel.findOne({ email });
@@ -41,8 +38,6 @@ export const registrar = async (req, res) => {
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
-  console.log("Datos recibidos:");
-  console.log(email, password);
   try {
     const userexist = await userModel.findOne({ email });
 
