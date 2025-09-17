@@ -3,7 +3,6 @@ import { JWTSC } from "../config/config.js";
 
 export function verifyToken(req, res, next) {
   const authTK = req.headers["authorization"];
-  console.log(authTK);
   if (!authTK){  console.log("No se recibio token");
    return res.status(401).json({ mensaje: "Token no ha sido enviado" });
   }

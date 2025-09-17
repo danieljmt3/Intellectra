@@ -146,8 +146,6 @@ export const generacionImagen = async (req, res) => {
   const hf = new InferenceClient(hukey);
   const { prompt } = req.body;
 
-  console.log(prompt,hukey);
-
   const UserExist = await userModel.findById(req.userId);
   try {
     if (!UserExist) {
@@ -159,6 +157,7 @@ export const generacionImagen = async (req, res) => {
       provider: "hf-inference",
       model: "black-forest-labs/FLUX.1-dev",
       inputs: prompt,
+      parameters:{num_inference_steps:5}
     });
 
     const buffer = await generalIMG.arrayBuffer();
