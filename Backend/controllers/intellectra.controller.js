@@ -71,6 +71,7 @@ export const traductor = async (req, res) => {
     }
 
     const traduccir = await hf.translation({
+      provider:"hf-inference",
       model: "facebook/mbart-large-50-many-to-many-mmt",
       inputs: prompt,
       parameters: {
