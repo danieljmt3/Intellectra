@@ -3,8 +3,8 @@ import { cluster } from "./config.js";
 
 const mongooconnect = async () => {
   try {
-    await mongoose.connect(cluster);
-    console.log("Conexión a la nube lista");
+    await mongoose.connect(cluster,{dbName:"Intellectra"});
+    console.log("Conexión a la nube lista en Intellectra DB");
   } catch (error) {
     console.log("No se pudo conectar:", error.message);
     process.exit(1);

@@ -26,7 +26,7 @@ export const registrar = async (req, res) => {
     });
 
     await NewUser.save();
-    console.log("Usuario guardado", NewUser);
+    console.log("Usuario guardado");
 
     res.status(201).json({ message: "Usuario registrado" });
   } catch (error) {

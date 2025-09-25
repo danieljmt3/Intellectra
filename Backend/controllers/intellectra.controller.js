@@ -1,11 +1,17 @@
 import { InferenceClient } from "@huggingface/inference";
 import promptModel from "../models/prompt.model.js";
 import userModel from "../models/user.model.js";
-import { elevenApi, emails, hukey, PassApp, support } from "../config/config.js";
+import {
+  elevenApi,
+  emails,
+  hukey,
+  PassApp,
+  support,
+} from "../config/config.js";
 import { ElevenLabsClient } from "elevenlabs";
 import { Buffer } from "buffer";
 import ReportModel from "../models/reports.model.js";
-import nodemailer from "nodemailer"
+import nodemailer from "nodemailer";
 import { configDotenv } from "dotenv";
 
 configDotenv();
@@ -21,7 +27,6 @@ export const corregiOrt = async (req, res) => {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    console.log("Solicitando corrección a HuggingFace...");
     const consulta = await hf.chatCompletion({
       model: "deepseek-ai/DeepSeek-R1-0528",
       provider: "fireworks-ai",
@@ -32,7 +37,6 @@ export const corregiOrt = async (req, res) => {
         },
       ],
     });
-    console.log("Respuesta completa del modelo:", consulta);
 
     const newprompt = new promptModel({
       content: prompt,
@@ -71,7 +75,7 @@ export const traductor = async (req, res) => {
     }
 
     const traduccir = await hf.translation({
-      provider:"hf-inference",
+      provider: "hf-inference",
       model: "facebook/mbart-large-50-many-to-many-mmt",
       inputs: prompt,
       parameters: {
@@ -153,12 +157,11 @@ export const generacionImagen = async (req, res) => {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    console.log("Generando");
     const generalIMG = await hf.textToImage({
       provider: "hf-inference",
       model: "black-forest-labs/FLUX.1-dev",
       inputs: prompt,
-      parameters:{num_inference_steps:5}
+      parameters: { num_inference_steps: 5 },
     });
 
     const buffer = await generalIMG.arrayBuffer();
@@ -184,8 +187,6 @@ export const generacionImagen = async (req, res) => {
 export const report = async (req, res) => {
   const { nombre, email, asunto } = req.body;
 
-  console.log("Recibidos", nombre, email, asunto);
-
   try {
     const newReport = new ReportModel({
       nombre,
@@ -196,22 +197,21 @@ export const report = async (req, res) => {
     newReport.save();
 
     const trasnport = nodemailer.createTransport({
-      service:'gmail',
-      auth:{
-        user:emails,
-        pass:PassApp
-      }
-    })
+      service: "gmail",
+      auth: {
+        user: emails,
+        pass: PassApp,
+      },
+    });
 
-    const mailOPtion={
-      to:support,
-      from:emails,
-      subject:`Problema de ${nombre}`,
-      text:`nombre:${nombre} \n correo:${email} \n Tiene el siguiente problema:\n ${asunto}`
-    }
+    const mailOPtion = {
+      to: support,
+      from: emails,
+      subject: `Problema de ${nombre}`,
+      text: `nombre:${nombre} \n correo:${email} \n Tiene el siguiente problema:\n ${asunto}`,
+    };
 
-    await trasnport.sendMail(mailOPtion)
-
+    await trasnport.sendMail(mailOPtion);
 
     res.status(200).json({ message: "Reporte enviado satisfactoriamente" });
   } catch (error) {

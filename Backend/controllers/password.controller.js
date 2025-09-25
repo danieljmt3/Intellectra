@@ -1,10 +1,4 @@
-import {
-  emails,
-  JWTSC,
-  PassApp,
-  production,
-  puerto,
-} from "../config/config.js";
+import { emails, JWTSC, PassApp } from "../config/config.js";
 import jwt from "jsonwebtoken";
 import userModel from "../models/user.model.js";
 import nodemailer from "nodemailer";
@@ -27,15 +21,12 @@ export const requestpasswordRest = async (req, res, next) => {
       secret,
       { expiresIn: "15m" }
     );
-    const host = req.headers.host; // Ej: proudly-quebec-palestine-burst.trycloudflare.com
+    const host = req.headers.host;
     const protocol =
       req.headers["x-forwarded-proto"] || req.protocol || "https";
     const tunnelUrl = `${protocol}://${host}`;
 
-
     const resetUrl = `${tunnelUrl}/reset-password?id=${userExist._id}&token=${Token}`;
-    console.log(resetUrl);
-
     const trasporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -60,15 +51,13 @@ export const requestpasswordRest = async (req, res, next) => {
     res.json({ message: "Correo de restablecimiento de contraseña" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Error al enviar un correo" });
+    return res.status(500).json({ message: "Error al enviar un correo" });
   }
 };
 
 export const RestPassword = async (req, res) => {
   const { id, token } = req.query;
   const { NewPassword } = req.body;
-
-  console.log(`Se recibio ${id} - ${token} - ${NewPassword}`);
 
   try {
     const userExist = await userModel.findById(id);
